@@ -101,7 +101,7 @@
   const user = JSON.parse(localStorage.getItem("currentUser"));
   if(!user){
     alert("Please login first");
-    window.location.href="landing.html"; // if user skips login
+    window.location.href="login.html"; // <-- redirect to login page
   } else {
     document.getElementById("welcome").innerText = `Welcome, ${user.username}!`;
   }
@@ -109,7 +109,7 @@
   // Logout
   document.getElementById("logout").addEventListener("click", ()=>{
     localStorage.removeItem("currentUser");
-    window.location.href="landing.html";
+    window.location.href="login.html"; // <-- go to login page after logout
   });
 </script>
 </body>
