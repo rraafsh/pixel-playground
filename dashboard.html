@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+
+  html, body {
+    width:100%;
+    height:100%;
+    overflow:hidden;
+  }
+
+  /* Background GIF */
+  body {
+    background: url("dashback.gif") no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+  }
+
+  /* Dark overlay */
+  #video-overlay {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.4);
+    z-index:-1;
+  }
+
+  /* Centered content */
+  .dashboard {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+    text-align:center;
+    color:#fff;
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    font-size:2.5em;
+    margin-bottom:15px;
+    text-shadow:0 0 10px rgba(0,0,0,0.8);
+  }
+  h2 {
+    font-size:1.5em;
+    margin-bottom:25px;
+  }
+
+  .buttons {
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  button {
+    padding:12px 20px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    background:#fff;
+    color:#6a5acd;
+    font-weight:bold;
+    transition:0.3s;
+    min-width:120px;
+  }
+  button:hover { background:#e0e0ff; }
+
+  #logout {
+    background:#ff4d4d;
+    color:#fff;
+    margin-top:30px;
+  }
+  #logout:hover { background:#ff1a1a; }
+</style>
+</head>
+<body>
+  <!-- Dark overlay -->
+  <div id="video-overlay"></div>
+
+  <!-- Dashboard content -->
+  <div class="dashboard">
+    <h1 id="welcome">Welcome!</h1>
+    <h2>Choose a game to play:</h2>
+    <div class="buttons">
+      <button onclick="window.location.href='tictactoe.html'">Tic-Tac-Toe</button>
+      <button onclick="window.location.href='snake.html'">Snake</button>
+    </div>
+    <button id="logout">Logout</button>
+  </div>
+
+<script>
+  // Load current user info
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  if(!user){
+    alert("Please login first");
+    window.location.href="landing.html"; // if user skips login
+  } else {
+    document.getElementById("welcome").innerText = `Welcome, ${user.username}!`;
+  }
+
+  // Logout
+  document.getElementById("logout").addEventListener("click", ()=>{
+    localStorage.removeItem("currentUser");
+    window.location.href="landing.html";
+  });
+</script>
+</body>
+</html>
+

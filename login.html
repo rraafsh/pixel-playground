@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login/Register Transition</title>
+<style>
+  :root{ --accent:#6a5acd; }
+
+  *{ box-sizing:border-box; margin:0; padding:0; font-family:Arial, sans-serif; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* prevent scrollbars */
+  }
+
+  /* Full-screen stretched video background */
+  #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: fill; /* stretch to fill screen */
+    z-index: -2; /* behind overlay and content */
+  }
+
+  /* Semi-transparent overlay for readability */
+  #video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3);
+    z-index: -1;
+  }
+
+  body{
+    display:flex; 
+    justify-content:center; 
+    align-items:center; 
+    height:100vh; 
+    background: #000;
+  }
+
+  .container{
+    width:360px; 
+    height:400px; 
+    position:relative; 
+    overflow:hidden;
+    border-radius:12px; 
+    background: rgba(255,255,255,0.9);
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    padding:30px;
+    z-index:1;
+  }
+
+  .form{
+    position:absolute; width:100%; padding:30px; top:0; left:0;
+    transition: transform 0.6s ease-in-out;
+  }
+
+  .form h2{ text-align:center; margin-bottom:20px; color:#333; }
+
+  .input-box{ margin:12px 0; position: relative; }
+  .input-box input{
+    width:100%; padding:12px 14px; border-radius:10px; border:1px solid #ddd;
+    outline:none; font-size:14px; background:rgba(255,255,255,0.9);
+  }
+
+  .input-box .toggle-password{
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    user-select: none;
+  }
+
+  .btn{
+    width:100%; padding:12px; border:none; border-radius:10px;
+    background:linear-gradient(135deg, #6a5acd, #836fff);
+    color:#fff; font-weight:600; cursor:pointer; margin-top:15px;
+    transition:0.3s;
+  }
+
+  .btn:hover{
+    background:linear-gradient(135deg, #5a4ac9, #715cff);
+  }
+
+  .toggle-btn{
+    display:block; margin:15px auto 0; background:none; border:none; color:var(--accent);
+    cursor:pointer; text-decoration:underline;
+  }
+
+  .field{
+    transform: translateX(120%); opacity:0; filter: blur(10px);
+    transition: transform 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+  }
+
+  .field.show{
+    transform: translateX(0); opacity:1; filter: blur(0);
+  }
+
+  .login{ transform: translateX(100%); }
+  .container.show-login .login{ transform: translateX(0); }
+  .container.show-login .register{ transform: translateX(-100%); }
+</style>
+</head>
+<body>
+
+<!-- Stretched Muted Full-Screen Video Background -->
+<video autoplay muted loop id="bg-video">
+  <source src="loginback.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+<div id="video-overlay"></div>
+
+<div class="container" id="container">
+  <!-- Register Form -->
+  <div class="form register" id="registerForm">
+    <h2>Register</h2>
+    <div class="input-box field"><input type="text" id="reg-username" placeholder="Username"></div>
+    <div class="input-box field"><input type="email" id="reg-email" placeholder="Email"></div>
+    <div class="input-box field password-box">
+      <input type="password" id="reg-password" placeholder="Password">
+      <span class="toggle-password">👁️</span>
+    </div>
+    <button type="button" class="btn field" id="registerBtn">Sign Up</button>
+    <button class="toggle-btn" id="toLogin">Already have an account?</button>
+  </div>
+
+  <!-- Login Form -->
+  <div class="form login" id="loginForm">
+    <h2>Login</h2>
+    <div class="input-box field"><input type="email" id="login-email" placeholder="Email"></div>
+    <div class="input-box field password-box">
+      <input type="password" id="login-password" placeholder="Password">
+      <span class="toggle-password">👁️</span>
+    </div>
+    <button type="button" class="btn field" id="loginBtn">Login</button>
+    <button class="toggle-btn" id="toRegister">Don't have an account?</button>
+  </div>
+</div>
+
+<script>
+const container = document.getElementById('container');
+const toLogin = document.getElementById('toLogin');
+const toRegister = document.getElementById('toRegister');
+
+// Animate fields
+function animateFields(form){
+  const fields = form.querySelectorAll('.field');
+  fields.forEach((el,i)=>{ setTimeout(()=> el.classList.add('show'), i*100); });
+}
+function resetFields(form){
+  const fields = form.querySelectorAll('.field');
+  fields.forEach(el => el.classList.remove('show'));
+}
+
+// Show login/register
+toLogin.addEventListener('click', ()=>{
+  resetFields(container.querySelector('.register'));
+  container.classList.add('show-login');
+  animateFields(container.querySelector('.login'));
+});
+toRegister.addEventListener('click', ()=>{
+  resetFields(container.querySelector('.login'));
+  container.classList.remove('show-login');
+  animateFields(container.querySelector('.register'));
+});
+window.addEventListener('DOMContentLoaded', ()=>{
+  animateFields(container.querySelector('.register'));
+});
+
+// Show/hide passwords
+function togglePassword(inputId, eye){
+  const input = document.getElementById(inputId);
+  if(input.type==='password'){ input.type='text'; eye.textContent='🙈'; }
+  else{ input.type='password'; eye.textContent='👁️'; }
+}
+document.querySelectorAll('.toggle-password').forEach(el=>{
+  el.addEventListener('click', ()=>togglePassword(el.previousElementSibling.id, el));
+});
+
+// Register functionality
+document.getElementById('registerBtn').addEventListener('click', ()=>{
+  const username = document.getElementById('reg-username').value;
+  const email = document.getElementById('reg-email').value;
+  const password = document.getElementById('reg-password').value;
+
+  if(!username || !email || !password){
+    alert('Please fill all fields');
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem('users')) || [];
+  if(users.some(u=>u.email===email)){
+    alert('Email already registered');
+    return;
+  }
+
+  users.push({username,email,password});
+  localStorage.setItem('users', JSON.stringify(users));
+  alert('Registration successful!');
+  document.getElementById('reg-username').value='';
+  document.getElementById('reg-email').value='';
+  document.getElementById('reg-password').value='';
+  toLogin.click();
+});
+
+// Login functionality
+document.getElementById('loginBtn').addEventListener('click', ()=>{
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const user = users.find(u=>u.email===email && u.password===password);
+
+  if(user){
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    window.location.href='dashboard.html';
+  } else {
+    alert('Invalid email or password');
+  }
+});
+</script>
+</body>
+</html>

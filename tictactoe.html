@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ Tic Tac Toe ✨</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: url("tictacback.gif") no-repeat center center/cover;
+    overflow: hidden;
+  }
+
+  h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: white;
+    text-shadow: 0 0 15px hotpink, 0 0 30px violet;
+    animation: glow 2s infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 10px hotpink, 0 0 20px violet; }
+    to { text-shadow: 0 0 25px violet, 0 0 40px hotpink; }
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 120px);
+    grid-template-rows: repeat(3, 120px);
+    gap: 15px;
+  }
+
+  .cell {
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.35);
+    border: 3px solid violet;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    text-shadow: 0 0 15px violet, 0 0 35px hotpink;
+    backdrop-filter: blur(6px);
+    transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+  }
+
+  .cell:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 25px violet;
+  }
+
+  .cell.X { 
+    color: white; 
+    text-shadow: 0 0 20px hotpink, 0 0 40px deeppink; 
+  }
+
+  .cell.O { 
+    color: white; 
+    text-shadow: 0 0 20px violet, 0 0 40px purple; 
+  }
+
+  #status {
+    margin-top: 25px;
+    font-size: 1.8em;
+    color: white;
+    text-shadow: 0 0 20px violet, 0 0 35px hotpink;
+  }
+
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+  }
+
+  button {
+    padding: 12px 25px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(45deg, hotpink, violet);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+    box-shadow: 0 0 15px violet;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+    background: linear-gradient(45deg, violet, hotpink);
+    box-shadow: 0 0 25px hotpink;
+  }
+
+  /* Back button floating in top-left */
+  .back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 18px;
+    font-size: 1em;
+    border-radius: 12px;
+    background: linear-gradient(45deg, violet, hotpink);
+    box-shadow: 0 0 15px violet;
+  }
+</style>
+</head>
+<body>
+  <!-- Back button in top-left -->
+  <button class="back-btn" onclick="goBack()">⬅ Back</button>
+
+  <h1>✨ Pink & Purple Tic Tac Toe ✨</h1>
+  <div class="board" id="board"></div>
+  <div id="status">Player X's turn</div>
+
+  <div class="buttons">
+    <button onclick="restartGame()">Restart</button>
+  </div>
+
+<script>
+  const board = document.getElementById("board");
+  const statusText = document.getElementById("status");
+  let currentPlayer = "X";
+  let gameActive = true;
+  let cells = ["", "", "", "", "", "", "", "", ""];
+
+  function createBoard() {
+    board.innerHTML = "";
+    cells.forEach((_, i) => {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.index = i;
+      cell.addEventListener("click", handleClick);
+      board.appendChild(cell);
+    });
+  }
+
+  function handleClick(e) {
+    const index = e.target.dataset.index;
+    if (cells[index] !== "" || !gameActive) return;
+    cells[index] = currentPlayer;
+    e.target.textContent = currentPlayer;
+    e.target.classList.add(currentPlayer);
+    checkWinner();
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+    if (gameActive) statusText.textContent = `Player ${currentPlayer}'s turn`;
+  }
+
+  function checkWinner() {
+    const winPatterns = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+    for (let pattern of winPatterns) {
+      const [a,b,c] = pattern;
+      if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+        statusText.textContent = `🏆 Player ${cells[a]} Wins! 🏆`;
+        gameActive = false;
+        return;
+      }
+    }
+    if (!cells.includes("")) {
+      statusText.textContent = "It's a Draw! 🤝";
+      gameActive = false;
+    }
+  }
+
+  function restartGame() {
+    currentPlayer = "X";
+    gameActive = true;
+    cells = ["", "", "", "", "", "", "", "", ""];
+    statusText.textContent = "Player X's turn";
+    createBoard();
+  }
+
+  function goBack() {
+    window.location.href = "dashboard.html"; // change if needed
+  }
+
+  createBoard();
+</script>
+</body>
+</html>
